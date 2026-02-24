@@ -28,8 +28,8 @@ sanity_check() {
         exit 1
     fi
 
-    if ! command -v fzf &>/dev/null; then
-        echo "fzf is not installed. Please install it first."
+    if ! command -v sk &>/dev/null; then
+        echo "skim is not installed. Please install it first."
         exit 1
     fi
 }
@@ -57,7 +57,7 @@ hydrate() {
 sanity_check
 
 # if TS_SEARCH_PATHS is not set use default
-[[ -n "$TS_SEARCH_PATHS" ]] || TS_SEARCH_PATHS=(~/stuff ~/stuff/proj)
+[[ -n "$TS_SEARCH_PATHS" ]] || TS_SEARCH_PATHS=(~/stuff ~/stuff/proj ~/stuff/reps)
 
 # Add any extra search paths to the TS_SEARCH_PATHS array
 # e.g : EXTRA_SEARCH_PATHS=("$HOME/extra1:4" "$HOME/extra2")
@@ -97,7 +97,7 @@ find_dirs() {
 if [[ $# -eq 1 ]]; then
     selected="$1"
 else
-    selected=$(find_dirs | fzf)
+    selected=$(find_dirs | sk)
 fi
 
 if [[ -z $selected ]]; then
@@ -110,7 +110,6 @@ fi
 
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
-
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
     tmux new-session -ds "$selected_name" -c "$selected"
     hydrate "$selected_name" "$selected"
